@@ -113,3 +113,36 @@ Running log of all work sessions, maintained by the session-closer.
 - Install tooling on crow: `ffmpeg`, `yt-dlp`, `gh`, `youtube-transcript-api`, `requests`
 - Run `git config pull.rebase true` in `~/.claude` on crow
 - Resume curriculum Module 1 when sync workflow is stable
+
+---
+
+## Session 2026-02-25 (Session 5)
+
+### Accomplished
+- Reviewed phoenix close-session failure output and diagnosed 3 root causes of the conflict cascade
+- Fixed `~/.claude/.gitignore`: added `plugins/blocklist.json`, `plugins/known_marketplaces.json`, `mcp-needs-auth-cache.json` — these are machine-specific auto-generated files that were causing merge conflicts on every pull
+- Removed plugin files from git tracking (`git rm --cached`) and pushed the removal to remote
+- Fixed `close-session` skill (Step 7): new order is **fetch → rebase → stage → commit → push** — eliminates the stash-rebase-pop dance entirely; rebase conflicts now abort cleanly with user instructions
+- Fixed `open-session` skill: removed `plugins/**` from Category A (gitignored files never appear in diffs)
+- Set `git config pull.rebase true` in `~/.claude` on crow
+- Installed `youtube-transcript-api` and `requests` Python packages on crow
+- Created `/mnt/c/Users/drj07/Videos/yt-analyzer` output directory
+- Added `claude-plugins-official` marketplace on crow
+- Clarified that the 4 Cloudflare MCPs (audit, builds, dns, docs) are in `~/.claude.json` (user-local, not synced) — not via claude.ai connectors as previously assumed
+- Added all 4 Cloudflare MCP servers to crow via `claude mcp add --transport http --scope user`
+- Updated `pluginsInstall.md`: removed stale blocklist sync note, added full MCP server reinstall section with commands and table
+
+### Decisions Made
+- **Plugin files are machine-specific**: `plugins/blocklist.json` contains hardcoded machine paths (`/home/phoenix/`) and auto-updating timestamps — should never have been tracked in git
+- **`~/.claude.json` is not synced**: MCP servers added via `claude mcp add` live at home root, outside the `~/.claude/` git repo — must be documented in `pluginsInstall.md` and reinstalled manually per machine
+- **Fetch-before-stage is the correct close-session pattern**: pulling before staging means working tree is always clean during rebase, eliminating the need for stash entirely
+
+### Problems Encountered
+- Removing `plugins/blocklist.json` from tracking conflicted with remote's last commit (which had modified it) → resolved by confirming our deletion wins during `git rebase --continue`
+- `claude` CLI cannot be invoked inside a Claude Code session → workaround: `CLAUDECODE= claude mcp add ...`
+
+### Next Steps
+- Restart Claude Code to load the 4 new Cloudflare MCP servers from `~/.claude.json`
+- Authenticate each Cloudflare MCP server via OAuth on first use (trigger one, auth, repeat)
+- Smoke test `youtube-analyze` skill end-to-end on crow
+- Resume curriculum: Module 1, Topic 1 — Foundations & Mental Model
