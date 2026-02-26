@@ -47,3 +47,38 @@ Running log of all work sessions, maintained by the session-closer.
 - Install Cloudflare MCP servers (either via claude.ai/settings/connectors or `claude mcp add` commands)
 - Implement hiddenFileManagement.md checklist in brandExploration project
 - Resume curriculum: Module 1, Topic 1 — Foundations & Mental Model
+
+---
+
+## Session 2026-02-25 (Session 3)
+
+### Accomplished
+- Designed and implemented cross-machine Claude context sync from scratch (plan → production in one session)
+- Created `~/.claude/.gitignore` — tracks only portable files; excludes all ephemeral/machine-specific data
+- Created `~/.claude/pluginsInstall.md` — marketplace + plugin reinstall reference for new machines
+- Initialized `~/.claude` as a git repo and created private GitHub repo `drj0717/claude-sync`
+- First push: 13 files committed — skills, settings, plugin configs, 5 project MEMORY.md files
+- Updated `/close-session` skill with new Step 7: syncs `~/.claude` to GitHub at end of every session
+- Created `/open-session` skill: pulls latest context from GitHub + project repo, surfaces next steps
+- Helped debug second-machine setup error (SSH key not authorized on Raven001/GPU PC)
+
+### Decisions Made
+- `~/.claude` as git repo (not rsync/Dropbox): version history, conflict detection, explicit diffs on each sync
+- Whitelist `.gitignore` pattern for `projects/*/memory/MEMORY.md`: traverses directory tree but only commits MEMORY.md, ignoring all session UUIDs, subagents, and tool-result files
+- `plugins/marketplaces/` excluded from sync: marketplace content is reinstalled via command (see pluginsInstall.md), keeping the repo small
+- `open-session` is read-only (`git pull --ff-only` only): never modifies files, never stashes — safe to run at any time
+- Second machine: SSH key setup recommended over HTTPS PAT for long-term use (set up once, zero friction thereafter)
+
+### Problems Encountered
+- Second machine (Raven001) SSH key not in GitHub — `Permission denied (publickey)` on `git pull`
+  - Resolution: provided two options — add SSH key to GitHub (recommended) or switch remote to HTTPS
+
+### Key Deliverables
+- `~/.claude` is now a synced git repo at `https://github.com/drj0717/claude-sync` (private)
+- `/open-session` skill — invoke at the start of any session on any machine
+- `/close-session` skill — now includes `~/.claude` sync as part of standard close flow
+
+### Next Steps
+- Complete SSH key setup on Raven001 (`ssh-keygen` → add to GitHub) and run `git pull` to finish second-machine setup
+- Test full loop: close session on one machine → open session on the other → verify sync
+- Resume curriculum when ready: Module 1, Topic 1 — Foundations & Mental Model
