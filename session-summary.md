@@ -146,3 +146,28 @@ Running log of all work sessions, maintained by the session-closer.
 - Authenticate each Cloudflare MCP server via OAuth on first use (trigger one, auth, repeat)
 - Smoke test `youtube-analyze` skill end-to-end on crow
 - Resume curriculum: Module 1, Topic 1 — Foundations & Mental Model
+
+---
+
+## Session 2026-02-25 (Session 6)
+
+### Accomplished
+- Audited close-session and open-session skill outputs by reviewing session JSONL logs
+- Identified two issues: (1) no MEMORY.md existed for crow's claude project, causing open-session to silently fall back to phoenix's memory with stale session count; (2) open-session disclosed the fallback poorly
+- Created `~/.claude/projects/-home-crow-projects-claude/memory/MEMORY.md` — crow's first own memory file, with accurate session count (5), current state, and corrected next steps
+- Verified youtube repo is fully in sync (phoenix's memory had a stale "crow is ahead" note — confirmed ahead=0, behind=0)
+- Confirmed all crow setup items complete (tools, pull.rebase config, MCP servers)
+
+### Decisions Made
+- **close-session must create MEMORY.md if missing**: the skill has a gap — it stages the file but never creates it if absent. This session fixed the immediate problem manually; skill fix is a future improvement.
+- **open-session fallback behavior should be disclosed**: when no project MEMORY.md is found, the skill should explicitly say it's reading a sibling project's memory as proxy, not silently use it.
+
+### Problems Encountered
+- No MEMORY.md for crow's claude project → open-session loaded phoenix's memory → reported "Session 4" instead of "Session 5"
+  - Resolution: created the file manually with accurate content synthesized from phoenix MEMORY.md + session-summary.md
+
+### Next Steps
+- Authenticate the 4 Cloudflare MCP servers via OAuth (restart Claude Code, trigger each)
+- Smoke test `youtube-analyze` skill on crow
+- Start curriculum — Module 1, Topic 1: Foundations & Mental Model
+- Future improvement: update close-session skill to create MEMORY.md if it doesn't exist before staging
