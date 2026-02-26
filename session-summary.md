@@ -82,3 +82,34 @@ Running log of all work sessions, maintained by the session-closer.
 - Complete SSH key setup on Raven001 (`ssh-keygen` → add to GitHub) and run `git pull` to finish second-machine setup
 - Test full loop: close session on one machine → open session on the other → verify sync
 - Resume curriculum when ready: Module 1, Topic 1 — Foundations & Mental Model
+
+## Session 2026-02-25 (Session 4)
+
+### Accomplished
+- Diagnosed open-session failures on crow machine (new machine case unhandled)
+- Rewrote open-session with 4 smart sync cases: new machine, remote newer, local newer, diverged (with user options)
+- Fixed critical cross-project memory bug: open-session now syncs `~/.claude` selectively — global config always, only current project MEMORY.md, never other projects' memories
+- Fixed close-session to stage only current project MEMORY.md (not all projects via `find`)
+- Fixed Case 0 (new machine): after `git reset --hard`, now renames local branch and sets upstream tracking to prevent spurious remote branches
+- Removed hardcoded `/home/phoenix/` path from settings.json — uses `~/` now
+- Conducted cross-machine parity audit (CLI tools, Python packages, MCP servers)
+- Created `notes/crow-setup.md` with full action list for completing crow setup
+- Confirmed Cloudflare MCP servers sync automatically via claude.ai connectors — no manual setup needed on crow
+- Confirmed `/mnt/c/Users/drj07/Videos/` path is identical on both machines
+
+### Decisions Made
+- **Rebase** is the correct default pull strategy for `~/.claude` (`git config pull.rebase true`) — keeps history linear; merge commits add noise for small config changes
+- **Selective `~/.claude` sync**: global config (skills/settings) always syncs; per-project MEMORY.md only syncs for the current project; other projects' memories are never touched
+- **Pause youtube project** until cross-machine sync workflow is fully smooth
+
+### Problems Encountered
+- Case 0 branch issue: `git reset --hard origin/main` set file content correctly but left local on `master` with no upstream → close-session pushed to spurious `master` branch on remote → cleaned up manually, fixed in skill
+- `~/.claude` diverged repeatedly between phoenix and crow → resolved each time with `git stash && git pull --rebase && git stash pop`
+- Plugin files (`blocklist.json`, `known_marketplaces.json`) always show as modified in `~/.claude` → blocks pulls → needs investigation on crow
+
+### Next Steps
+- Open claude project on crow and work through `notes/crow-setup.md`
+- Investigate always-modified plugin files in `~/.claude` (add to .gitignore or understand root cause)
+- Install tooling on crow: `ffmpeg`, `yt-dlp`, `gh`, `youtube-transcript-api`, `requests`
+- Run `git config pull.rebase true` in `~/.claude` on crow
+- Resume curriculum Module 1 when sync workflow is stable
