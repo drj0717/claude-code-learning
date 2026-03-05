@@ -171,3 +171,30 @@ Running log of all work sessions, maintained by the session-closer.
 - Smoke test `youtube-analyze` skill on crow
 - Start curriculum — Module 1, Topic 1: Foundations & Mental Model
 - Future improvement: update close-session skill to create MEMORY.md if it doesn't exist before staging
+
+---
+
+## Session 2026-03-05 (Session 7)
+
+### Accomplished
+- Set up SSH keys on phoenix machine (WSL2) — ED25519 key generated and added to GitHub account (drj0717)
+- Refreshed `gh` CLI token scope to include `admin:public_key` for SSH key management
+- Verified SSH authentication to GitHub works (`ssh -T git@github.com` → success)
+- Added two official Claude Code plugin marketplaces:
+  - `anthropics/claude-plugins-official` — curated high-quality plugins
+  - `anthropics/claude-code` — demo/example plugins (also the main repo)
+- Installed `frontend-design` plugin from claude-code-plugins marketplace
+
+### Decisions Made
+- ED25519 key type chosen over RSA: modern, shorter, faster, equally secure
+- No passphrase on SSH key: acceptable tradeoff for WSL2 dev environment
+
+### Problems Encountered
+- Initial `/plugin marketplace add anthropic/claude-code` failed: repo name uses `anthropics` (with 's'), not `anthropic`
+- First marketplace clone attempt failed due to missing SSH keys — resolved by generating key and adding to GitHub
+- `gh ssh-key add` required `admin:public_key` scope — resolved with `gh auth refresh`
+
+### Next Steps
+- Explore installed plugin marketplaces and try out plugins
+- Complete crow machine setup (notes/crow-setup.md)
+- Resume curriculum Module 1 when ready
