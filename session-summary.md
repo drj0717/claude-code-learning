@@ -198,3 +198,27 @@ Running log of all work sessions, maintained by the session-closer.
 - Explore installed plugin marketplaces and try out plugins
 - Complete crow machine setup (notes/crow-setup.md)
 - Resume curriculum Module 1 when ready
+
+---
+
+## Session 2026-03-05 (Session 8)
+
+### Accomplished
+- Created Python virtual environment at `~/venvs/docs/` for document processing libraries — avoids needing sudo for pip installs
+- Configured passwordless sudo for apt/apt-get only via `/etc/sudoers.d/claude-apt` — scoped to package management, not full root
+- Created global `~/.claude/CLAUDE.md` with Python venv and sudo apt instructions — applies to all projects
+- Pre-approved common low-risk Bash commands in `~/.claude/settings.json` (ls, grep, git, python3, curl, sudo apt, etc.) — eliminates repetitive permission prompts
+
+### Decisions Made
+- **Virtual environment over system pip**: no sudo needed for Python packages; one shared venv (`~/venvs/docs/`) serves all projects
+- **Scoped NOPASSWD**: only `apt` and `apt-get` are passwordless — not full root access
+- **Global CLAUDE.md**: Python/apt instructions live in `~/.claude/CLAUDE.md` so they apply everywhere, not per-project
+- **Broad permission allow-list**: common read-only and dev commands pre-approved; destructive commands like `rm` still require confirmation
+
+### Problems Encountered
+- Catch-22: couldn't use sudo inside Claude to create the sudoers rule — user ran the command manually in their terminal
+
+### Next Steps
+- Explore installed plugin marketplaces and try out plugins
+- Resume curriculum Module 1 when ready
+- Test the new setup by running a skill that needs pip installs (e.g., deep-research)
