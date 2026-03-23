@@ -222,3 +222,45 @@ Running log of all work sessions, maintained by the session-closer.
 - Explore installed plugin marketplaces and try out plugins
 - Resume curriculum Module 1 when ready
 - Test the new setup by running a skill that needs pip installs (e.g., deep-research)
+
+---
+
+## Session 2026-03-23 (Session 9)
+
+### Accomplished
+- **Sibling project context guides**: Dispatched background agents to review brandExploration, forge-hunt, and dd-orchestrator; created `context/brandExploration.md`, `context/forge-hunt.md`, `context/dd-orchestrator.md`
+- **Unified Forge brand guide**: Created `context/forge-unified-brand-guide.md` — comprehensive design system reference pulling from forge-technical's Alloy palette, brandExploration brand decisions, and audits of forge-hunt + dd-orchestrator styling
+- **Unified site structure**: Restructured `deals.forge-technical.com` into a multi-app hub:
+  - `/` — Landing page with app cards
+  - `/crucible/*` — The Crucible (dd-orchestrator portal)
+  - `/hunt/*` — Forge Hunt (forge-hunt React SPA)
+  - Single worker with path-based routing (prefix stripping before Hono/R2)
+- **Shared CSS (`forge-tokens.css`)**: Created centralized Forge Alloy design tokens file served at root by worker — colors, fonts, dark/light mode, typography classes, semantic status tokens
+- **Dark/light mode**: Full implementation across all apps — `data-mode` attribute, `localStorage('forge-mode')`, `prefers-color-scheme` fallback, cross-tab sync via `window.addEventListener('storage')`
+- **dd-orchestrator template migration**: Replaced ~15 hardcoded hex colors in `base.html` with CSS custom properties; added mode toggle to navbar
+- **forge-hunt CSS integration**: Mapped Forge tokens to shadcn CSS variables in `index.css`, swapped Geist → Space Grotesk, changed dark mode trigger from `.dark` class to `[data-mode="dark"]`, added mode toggle to sidebar
+- **Naming**: Renamed "Deal Desk" → "The Crucible" (`/dd/` → `/crucible/`), "Deal Sourcing" → "Forge Hunt"
+- **Forge Target**: Added third card to landing page for upcoming Forge Target app (`/target/`)
+- **New project**: Scaffolded `forge-maps` project (map engine for Forge deals apps)
+- **Memory**: Saved project memory for site structure, Crucible naming, Forge Target split, and sibling project refresh policy
+
+### Decisions Made
+- **Single worker architecture**: One Cloudflare Worker serves all apps via path prefix stripping — simpler than multi-worker route dispatch, keeps Durable Objects bound to one worker
+- **Shared CSS via `[assets]`**: `forge-tokens.css` lives in worker's `public/` dir and is served at root by Cloudflare's assets config — all apps link to it
+- **The Crucible naming**: dd-orchestrator portal renamed to "The Crucible" at `/crucible/` — branding update for the app itself deferred to later
+- **Forge Hunt / Forge Target split**: forge-hunt being split into Hunt (pipeline/outreach) and Target (deep-dive profiles) — planning phase
+- **Cross-tab mode sync**: `storage` event listener on all toggle scripts ensures dark/light mode changes propagate instantly across open tabs
+- **forge-hunt dev mode**: Local copy of `forge-tokens.css` in `frontend/src/` for dev; production uses worker-served version
+- **Static assets at root**: `chat-widget.js` and `forge-tokens.css` referenced at root level (served by `[assets]` config), not under app prefix
+
+### Problems Encountered
+- **Chat widget WebSocket path**: `useAgent` hook connects at root `/agents/*`, not under `/crucible/agents/*` — solved by adding top-level `/agents/*` handler in fetch
+- **`[assets]` serving order**: Cloudflare Workers serve static assets BEFORE the fetch handler — templates must reference shared assets at root (`/chat-widget.js`, `/forge-tokens.css`), not under app prefixes
+- **Linter modifications**: Several files were modified by linters between edits — handled by re-reading before editing
+
+### Next Steps
+- Plan and implement the Forge Hunt → Forge Target split
+- Build forge-maps initial implementation
+- Apply Crucible branding to dd-orchestrator's internal UI
+- Migrate dd-orchestrator chat widget inline styles to use `theme.ts` constants
+- Start curriculum — Module 1, Topic 1: Foundations & Mental Model
