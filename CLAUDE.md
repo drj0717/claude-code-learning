@@ -9,11 +9,6 @@ This project is a structured learning environment for mastering Claude Code CLI.
 - Cheat sheets go in `cheatsheets/`
 - Exercises and practice files go in `exercises/`
 
-## Sibling Project Context
-- `context/` directory contains context guides for sibling Forge projects
-- `context/forge-unified-brand-guide.md` — Forge Alloy design system, shared CSS, migration roadmap
-- Context guides are refreshed on each `/open-session` (see memory)
-
 ## Guidelines
 - Explain reasoning and "why" when teaching concepts
 - Use hands-on examples whenever possible

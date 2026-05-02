@@ -264,3 +264,46 @@ Running log of all work sessions, maintained by the session-closer.
 - Apply Crucible branding to dd-orchestrator's internal UI
 - Migrate dd-orchestrator chat widget inline styles to use `theme.ts` constants
 - Start curriculum — Module 1, Topic 1: Foundations & Mental Model
+
+---
+
+## Session 2026-05-01 (Forge design system + Claude Design)
+
+### Accomplished
+- Researched **Claude Design** (Anthropic Labs, April 2026 launch) — capabilities, file formats accepted (DESIGN.md is canonical), GitHub integration model (single-account), no API/CLI for setup
+- Created `forge-technical/design-system` repo (private, GitHub) seeded with full structure: DESIGN.md (9-section canonical spec), tokens (CSS + JSON), styles synced from production, brand voice/archetype/story, color palette + 2026-trend rationale, typography system, logo concepts, photography rationale
+- Created `forge-technical/website` org-mirror of `drj0717/forge-technical` (full git history preserved via `git clone --mirror` + `git push --mirror`)
+- Applied **DM Sans orphan font cleanup** to `forge-technical/website` only (5 HTML files); live `drj0717/forge-technical` left untouched per user direction; local DM Sans commit on personal-repo clone discarded via `git reset --hard origin/main`
+- Imported `logoDirectionResearch.md` → designer brief synthesis (3 agent briefs from Claude/Codex/Gemini) → **v2 refinement** (literal forged metal imagery) into design-system `docs/research/`
+- Archived v1 logo work to `docs/research/archive/v1/` with SUPERSEDED banner; brought v2 in as current. Cross-agent convergence: **Layered Alloy Cross-Section** is unanimous top pick.
+- Saved 2 project memories to ~/.claude: `project_forge_website_migration.md` (CF migration deferred state) and `project_forge_design_system.md` (design-system + Claude Design ingestion plan + stale logo files awaiting acceptance)
+- Ran `/context-cleanup --session` to refresh MEMORY.md index
+
+### Decisions Made
+- **Standalone design-system repo (not in website repo)**: Claude Design treats one repo as canonical via DESIGN.md; separating concerns lets website iterate without churning the design system. Recommended by Anthropic docs.
+- **Clone-and-fork rather than transfer for website**: User keeps `drj0717/forge-technical` as-is until ready to migrate Cloudflare Pages, zone, and registrar from Phoenix CF account. `forge-technical/website` exists as the destination for that future migration. Avoids breaking the live deploy.
+- **Use Michroma as Claude Design substitute for Halogen**: Adobe Fonts terms prohibit redistribution; Halogen .otf cannot be uploaded. Michroma is the closest open-source geometric retro-futurist match and is already in `tokens.css` fallback chain. Production loads Halogen via Typekit on authorized domains.
+- **Do NOT auto-canonize v2 logo direction**: `logo/status.md`, `logo/concepts/`, `logo/executive-summary.md`, and `DESIGN.md § 1` anvil references are intentionally left stale until user explicitly accepts the v2 direction (likely after seeing AI-rendered sketches).
+- **Archive pattern for iterations**: `docs/research/archive/vN/` preserves superseded rounds; current files drop the version suffix; synthesis filenames keep `-v2` to signal lineage.
+- **Single GitHub install per Claude account**: drove the org-placement decision for design-system. User stays on `drj0717` GitHub connector; org-membership grants access to `forge-technical/*` repos.
+
+### Problems Encountered
+- **WebP photography not on crow machine**: 5 production photos (`picture{4,7,9,12,14}-{800,1600}.webp`) live on Windows OneDrive path inaccessible from this machine and not in the GitHub repo. Captured imaging rationale in `photography/imaging-notes.md`; samples deferred until accessible.
+- **DM Sans was a complete orphan**: loaded on all 5 HTML pages via Google Fonts URL but never referenced in any CSS rule or inline style. Confirmed via grep before removing.
+- **Edit tool requires fresh Read after file moves**: First attempt to edit the v2 synthesis after `git mv` failed because Edit had only seen the original brandExploration path. Re-read at the new design-system path to fix.
+- **Background bash output truncation**: A push command's output was lost when the bash command went to background; re-ran push manually to confirm completion.
+
+### Files Changed (cross-repo)
+- `forge-technical/design-system` — 5 commits (initial seed → website mirror docs → logo research → designer brief synthesis → v2 archive+import → path-ref fix)
+- `forge-technical/website` — repo created with full mirror + 1 commit (DM Sans cleanup)
+- `drj0717/forge-technical` — `git pull` to refresh local; no commits pushed
+- `~/.claude/projects/-home-crow-projects-claude/memory/` — 2 new project memory files + MEMORY.md index updated
+- This repo (`projects/claude`) — `session-summary.md` appended; `CLAUDE.md` carry-over (sibling-context section removed; matches existing `D context/*` deletions)
+
+### Next Steps
+- **Set up Claude Design instance** (manual web flow at claude.ai/design/#org → link `forge-technical/design-system` repo only; use suggested company name+blurb and notes from this session)
+- **Run AI image prompts** from `design-system/docs/research/visual-direction-v2.md` § "Curated AI Prompts" to produce first-round sketches across the three recommended directions (Layered Alloy Cross-Section + Maker's-Mark Stamp + Glowing Forge-Weld Seam)
+- **Review extracted design system** in Claude Design before publishing; verify Glacier Blue/Forge Copper as accents, Halogen→Michroma fallback, brand-signature gradient preserved
+- **Decide on v2 canonization** after seeing rendered sketches; if accepting, update `logo/status.md`, archive `logo/concepts/` to `logo/archive/`, drop anvil ref from `DESIGN.md § 1`
+- **Cloudflare migration** when ready: zone + Pages + registrar from Phoenix CF account → Forge CF account (see `project_forge_website_migration.md`)
+- **Curriculum** — still queued at Module 1, Topic 1
