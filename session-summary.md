@@ -307,3 +307,30 @@ Running log of all work sessions, maintained by the session-closer.
 - **Decide on v2 canonization** after seeing rendered sketches; if accepting, update `logo/status.md`, archive `logo/concepts/` to `logo/archive/`, drop anvil ref from `DESIGN.md § 1`
 - **Cloudflare migration** when ready: zone + Pages + registrar from Phoenix CF account → Forge CF account (see `project_forge_website_migration.md`)
 - **Curriculum** — still queued at Module 1, Topic 1
+
+---
+
+## Session 2026-05-21 15:29
+
+### Accomplished
+- Extended `~/.tmux.conf` with pane labeling and color-coding: `pane-border-status top`, custom border format, dim/green active border, plus `prefix r` to reload and `prefix T` to set a pane title.
+- Added WSL2 clipboard integration: `bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "clip.exe"` so a mouse-drag selection in copy mode lands in the Windows clipboard.
+- Switched pane title strategy to the "bulletproof" `@custom_title` user-variable pattern so Claude Code and shell OSC broadcasts can no longer clobber locked labels; remapped `prefix T` to `set -p @custom_title` and added `prefix t` to clear (overriding the default clock-mode binding).
+- Created `cheatsheets/tmux.md` — a n00b-targeted cheat sheet pinned to the current config: mental model, session/window/pane keys, the locked-title workflow, copy mode + `clip.exe`, a "what's in your config right now" table, recipes, and a "learn later" pointer list.
+- Updated `MEMORY.md` to log the new cheat sheet under "Cheat Sheets Offered / Created" (replacing the `(none yet)` placeholder).
+
+### Decisions Made
+- **Use `@custom_title` rather than `select-pane -T`**: Claude Code and shell `PROMPT_COMMAND` constantly emit OSC 0/2 escapes that overwrite `pane_title`. Tmux user variables (`@`-prefixed) are private to tmux's state and unreachable from the running program. Format conditional `#{?@custom_title,#{@custom_title},#{pane_title}}` keeps the broadcast title as a fallback when no lock is set.
+- **Override default `prefix t` (clock-mode)** to be the title-clear binding. Trade-off accepted: lose the clock display (rarely used) in exchange for a memorable lower/upper pair (`T` sets, `t` clears).
+- **Don't add a pane-background-color binding**: kept the config minimal since per-pane background isn't easily made permanent. Mentioned the manual `select-pane -P 'bg=colour235'` form for ad-hoc use.
+- **Cheat sheet pinned to current config, not generic tmux**: included a per-line config map so Phoenix can see exactly what each `~/.tmux.conf` line buys them.
+
+### Problems Encountered
+- First `prefix t` comment in the config said "Shift+T (i.e. prefix t)" — contradictory (Shift+T is capital T, which is the *set* binding, not *clear*). Caught and fixed in a follow-up edit.
+- AskUserQuestion returned a free-form clip.exe binding instead of one of the offered options — handled by interpreting the response as the requested add and proceeding.
+
+### Next Steps
+- Reload tmux config in any running sessions: `Ctrl+b :` → `source-file ~/.tmux.conf`, or `prefix r`.
+- Optional follow-on: bind a key for per-pane background color (e.g. `bind B command-prompt -p "bg color:" "select-pane -P 'bg=%%'"`).
+- Optional follow-on: consider `tmux-resurrect` / `tmux-continuum` if you want sessions to survive reboots.
+- **Curriculum** — still queued at Module 1, Topic 1.
