@@ -2,6 +2,18 @@
 
 > Tailored to your current `~/.tmux.conf` (Phoenix, WSL2). Prefix key is **`Ctrl+b`** — every command in this sheet starts with that unless noted.
 
+## How to Read the Keystrokes
+
+Three patterns appear throughout this sheet:
+
+- **`Ctrl+b`** — Hold the **Ctrl** key, press **b**, release both. This is the "prefix" — every tmux command starts here.
+- **`prefix X`** — Shorthand for: do the prefix (Ctrl+b), let go of both keys, *then* press the next key. For a capital like `prefix T` you press Ctrl+b, release both, then press **Shift+T**.
+- **`prefix :`** then a command — Opens tmux's command line at the very bottom of the screen. After pressing `prefix :` you type the command literally and press **Enter**. (The colon is **Shift+;** on US keyboards.)
+
+There's no chord — `Ctrl+b` always finishes before the next key. If nothing happens when you press the second key, the prefix may have timed out; press Ctrl+b again.
+
+---
+
 ## Mental Model
 
 tmux has three layers, nested like Russian dolls:
@@ -73,28 +85,125 @@ You also have **mouse on** — click a pane to focus, drag a border to resize, s
 
 ---
 
-## Pane Titles (the "bulletproof" labels)
+## Pane Titles — Step by Step
 
-Your config shows a title bar at the top of each pane:
+Your config shows a label bar at the top of each pane:
 
 ```
 ┌─ 0: Forge ────┬─ 1: Raven ───────┐
 ```
 
-The trick: Claude Code and your shell constantly broadcast a "title" via hidden escape codes, which clobbers normal pane titles. Your config defends against this by reading a private tmux variable (`@custom_title`) that those programs can't see.
+The trick: Claude Code and your shell constantly broadcast a "title" via hidden escape codes, which clobbers normal pane titles. Your config defends against this by reading a private tmux variable (`@custom_title`) that those programs can't see. **Visual cue**: the focused pane's border *and* title turn green/bold; inactive panes are dim gray.
 
-| Keys                     | What it does                                                 |
-| ------------------------ | ------------------------------------------------------------ |
-| `prefix T` *(capital)*   | Prompt for a **locked** title for the current pane           |
-| `prefix t` *(lowercase)* | Clear the lock — hand the title back to the running program  |
+### Set a locked title — keybinding route
 
-**Manual form** (no keybinding):
-- Lock a title: `prefix :` then `set -p @custom_title "Project Raven"`
-- Clear it:     `prefix :` then `set -p @custom_title ""`
+1. Make sure the pane you want to label is the focused one (click it, or use `Ctrl+b` then an arrow key).
+2. Press **`Ctrl+b`**, release both keys.
+3. Press **`Shift+T`** (capital T).
+4. Look at the very bottom of the tmux screen. A prompt appears:
+   ```
+   Pane title:
+   ```
+5. Type the label you want, e.g. `Dev Server`.
+6. Press **Enter**.
 
-The `-p` flag scopes the variable to the current **p**ane.
+The label appears in the top border of that pane. It will survive whatever the program inside it does.
 
-**Visual cue**: the focused pane's border *and* title turn green/bold. Inactive panes are dim gray.
+### Set a locked title — manual route (no keybinding)
+
+Use this if the keybinding misfires, or to script it.
+
+1. Focus the pane you want to label.
+2. Press **`Ctrl+b`**, release, then press **`Shift+;`** (the colon `:`).
+3. A `:` prompt appears at the bottom.
+4. Type literally (quotes included):
+   ```
+   set -p @custom_title "Dev Server"
+   ```
+5. Press **Enter**.
+
+(The `-p` flag scopes the variable to the current pane only.)
+
+### Clear a locked title
+
+This hands the title back to whatever program is running (so e.g. `claude` will broadcast its own title again).
+
+- **Keybinding route:** Press **`Ctrl+b`**, release, then press lowercase **`t`**.
+- **Manual route:** Press **`Ctrl+b`** then **`:`**, type `set -p @custom_title ""` (two quotes, nothing between), press **Enter**.
+
+### Rename an existing locked title
+
+Just run the set keybinding again — `Ctrl+b` then `Shift+T` always overwrites. The prompt does *not* pre-fill with the old value; type the new title from scratch.
+
+### Verify a title is set
+
+Press **`Ctrl+b`** then **`:`**, type `show -pv @custom_title`, press **Enter**. The current value (or blank if cleared) prints at the bottom for a moment.
+
+---
+
+## Pane Colors — Step by Step
+
+Two color things you can control:
+
+1. **Pane background** — the color *inside* a pane (per-pane).
+2. **Pane border color** — the line drawn around panes (global; your config already paints the focused pane's border green).
+
+### Change the background color of the focused pane
+
+1. Focus the pane you want to color (click it).
+2. Press **`Ctrl+b`**, release, then press **`:`** (Shift+; on US keyboards). A `:` prompt appears at the bottom.
+3. Type literally (quotes included):
+   ```
+   select-pane -P 'bg=colour235'
+   ```
+4. Press **Enter**. The background changes immediately.
+
+Replace `colour235` with any 0–255 from the 256-color palette. Useful values:
+
+| Color           | Code        | Good for                          |
+| --------------- | ----------- | --------------------------------- |
+| Dark gray       | `colour235` | Subtle dimming, easy on the eyes  |
+| Almost black    | `colour232` | Maximum contrast against text     |
+| Dark red        | `colour52`  | "Danger" / production pane        |
+| Dark green      | `colour22`  | "Safe" / dev pane                 |
+| Dark blue       | `colour17`  | Editor pane                       |
+| Dark amber      | `colour94`  | Log-tailing pane                  |
+| Plum            | `colour54`  | Distinctive secondary             |
+
+### Reset the focused pane back to default
+
+1. Press **`Ctrl+b`** then **`:`**.
+2. Type: `select-pane -P 'bg=default'`
+3. Press **Enter**.
+
+### Color a specific pane without focusing it
+
+Every pane has an index — the number in its title bar (`0:`, `1:`, …).
+
+1. Press **`Ctrl+b`** then **`:`**.
+2. Type (substituting the pane number you want):
+   ```
+   select-pane -t 1 -P 'bg=colour22'
+   ```
+3. Press **Enter**.
+
+### Change the focused-pane border color (affects every pane, this session)
+
+Your config draws focused borders in green. To switch to cyan for this tmux session:
+
+1. Press **`Ctrl+b`** then **`:`**.
+2. Type: `set -g pane-active-border-style fg=cyan`
+3. Press **Enter**.
+
+This lasts until tmux exits. To make it permanent, edit `~/.tmux.conf` and change the `pane-active-border-style` line, then reload with `Ctrl+b` then `r`.
+
+### Pick a color you like
+
+There's no built-in picker. Run this in a shell to print the full 256-color palette as labeled swatches, then plug the number you like into `colour<number>`:
+
+```bash
+for i in {0..255}; do printf "\e[48;5;${i}m %3d \e[0m" "$i"; (( (i+1) % 16 == 0 )) && echo; done
+```
 
 ---
 
@@ -164,13 +273,13 @@ tmux a -t raven           # attach again, exactly where you left off
 ```
 
 **"I split a pane to run a server and I want it labeled"**
-1. Split: `prefix %`
-2. Focus the new pane (`prefix →`)
-3. Label it: `prefix T` → type `Dev Server` → Enter
-4. The label survives even when the server starts spamming output.
+1. Press **`Ctrl+b`**, release, then press **`%`** (Shift+5) — splits vertically; cursor is now in the new right-hand pane.
+2. Press **`Ctrl+b`**, release, then press **`Shift+T`**.
+3. At the `Pane title:` prompt at the bottom of the screen, type `Dev Server`.
+4. Press **Enter**. The label appears in the new pane's top border and will survive whatever the server spams to stdout.
 
 **"My titles got hijacked by Claude Code"**
-You didn't set a locked title. Re-set with `prefix T`. The `@custom_title` variable always wins over what Claude Code broadcasts.
+You didn't set a locked title. Re-set it: press **`Ctrl+b`**, release, then press **`Shift+T`**, type the label, press **Enter**. The `@custom_title` variable always wins over what Claude Code broadcasts.
 
 **"I want a project per window, with multiple panes each"**
 ```

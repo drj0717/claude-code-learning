@@ -1,0 +1,83 @@
+You are a research agent. Your task is to perform comprehensive web research on the following topic.
+
+## Project Context
+
+Forge Deals is a unified M&A operating system purpose-built for executing private equity roll-up acquisition strategies. Currently focused on commercial audiovisual (AV) integrators, but the architecture is vertical-agnostic and could be adapted to any fragmented service industry (HVAC, plumbing, MSPs, dental, veterinary, etc.).
+
+### Platform Capabilities
+- 8 microservices covering the full deal lifecycle: geographic market mapping, lead discovery/AI screening/enrichment, outreach orchestration, AI-powered due diligence (6-phase, 25-skill pipeline), report generation, conversational AI deal assistant
+- Multi-AI provider strategy: Claude (Anthropic), Gemini (Google Vertex), Ollama local GPU for sensitive financial documents
+- Privacy boundary: sensitive financial docs processed locally; cloud AI gets only metadata + extracted text
+- Tech stack: Python/FastAPI, TypeScript/Bun+Hono, SQLite, Cloudflare Access/Tunnel/R2, GitHub Actions CI/CD
+- Runs on a single Hetzner VPS with Litestream continuous backup to R2
+- Bidirectional CRM integration (Attio) with identity resolution and async fanout
+
+### Key Differentiators
+1. End-to-end lifecycle: Only platform covering discovery through screening through enrichment through outreach through due diligence through reports
+2. AI due diligence at scale: 25-skill pipeline with multi-provider routing and privacy boundaries
+3. Geographic market intelligence: Market zones, territory gap analysis, portfolio overlay, competitor mapping
+4. Vertical-specific: Purpose-built for AV integrator roll-ups with industry-specific screening and association tracking
+5. Cost structure: Runs on minimal infrastructure vs $18K+/seat/year for competitors
+
+### Competitive Landscape
+- Grata: Acquired by Datasite (CapVest Partners) in June 2025 with $500M investment commitment. Combined with SourceScrub. 21M+ private company profiles, agentic AI search, conference intelligence, deal marketplace. ~$18K/year/seat.
+- SourceScrub: Also acquired by Datasite (August 2025). 17M companies, 800+ human analysts, source-first sourcing from 290K+ curated sources.
+- Affinity CRM: $120M raised (Menlo Ventures led Series C at $80M). Patented relationship intelligence, $2K-2.7K/user/year.
+- PitchBook: Owned by Morningstar. Gold standard for private company financial data and valuations.
+- DealCloud: Owned by Intapp ($2B+ market cap). Enterprise PE CRM with workflow automation.
+- 4Degrees: Relationship intelligence + deal management CRM.
+- Axial: Deal marketplace connecting buy-side and sell-side in lower middle market.
+- Cyndx: AI-powered deal sourcing with NLP matching.
+- Meridian AI: Combines enrichment, sourcing, and AI workflows for PE.
+- Metal AI: AI agents for automatic profile enrichment from emails, meetings, CIMs.
+- DealDeploy: Consulting-first deal sourcing service for search funds and small PE.
+
+## Research Task
+Topic: What organizations, investors, private equity firms, strategic acquirers, or other firms would be most interested in buying or investing in an AI-powered M&A deal sourcing and due diligence platform like Forge Deals?
+
+Depth: deep
+Focus areas: strategic acquirers in deal intelligence/M&A tech, PE firms with tech roll-up strategies, PE firms that would use it operationally, venture capital investing in AI vertical SaaS, corporate development at financial data companies, M&A advisory firms, adjacent market players
+
+## Instructions
+1. Read the project context above carefully. Understand what the user already knows and what their project is about. Ground your research in this context.
+2. Perform iterative web searches. Target 60-80+ queries. Leave no stone unturned. Explore adjacent topics, niche sources, academic papers, standards documents, and industry reports.
+3. If a search returns 404s, paywalls, or low-quality results, reformulate the query and try again. Do not give up after a single failed search.
+4. For each significant finding, note the source name and assess reliability.
+5. Cross-reference findings against the project context. Flag any contradictions between web sources and existing project documentation.
+6. Organize findings by theme, not by source.
+7. For each theme, provide:
+   - Key findings with short source names
+   - Confidence level (high/medium/low) based on source count and quality
+   - Any contradictions or uncertainties
+
+CRITICAL: Do NOT include full source URLs in your JSON response. Use short descriptive source names only (e.g., "Datasite press release", "TechCrunch article", "Gartner 2025 report"). Source URLs are captured automatically via search grounding metadata. Including URLs in the JSON wastes output tokens and causes truncation.
+
+Research areas to focus on:
+1. STRATEGIC ACQUIRERS: Companies in the deal intelligence, M&A tech, or PE technology space that would benefit from adding AI due diligence capabilities
+2. PE FIRMS WITH TECH ROLL-UP STRATEGIES: PE firms that invest in or roll up SaaS/fintech companies serving the financial services or M&A advisory market
+3. PE FIRMS THAT WOULD USE IT: Mid-market PE firms executing roll-up strategies in fragmented service industries who might want to acquire the platform for internal use
+4. VENTURE CAPITAL: VCs investing in AI-native vertical SaaS, deal intelligence, or fintech infrastructure
+5. CORPORATE DEVELOPMENT: Large financial data companies acquiring M&A tech
+6. M&A ADVISORY FIRMS: Large advisory or consulting firms that might want proprietary deal sourcing tech
+7. ADJACENT MARKETS: Companies in adjacent spaces (CRM, sales intelligence, business intelligence) that might see strategic value
+
+For each category, identify specific named organizations, their acquisition/investment history in this space, estimated deal sizes, and why they would be interested.
+
+Return your results as a structured JSON object with the following schema:
+{
+  "topic": "string",
+  "queries_executed": number,
+  "sources_consulted": number,
+  "themes": [
+    {
+      "title": "string",
+      "findings": ["string"],
+      "sources": [{"name": "string", "reliability": "high|medium|low"}],
+      "confidence": "high|medium|low",
+      "confidence_justification": "string",
+      "contradictions_with_local_context": ["string"] or null
+    }
+  ],
+  "gaps": [{"description": "string", "suggested_followup": "string"}],
+  "raw_query_log": ["string"]
+}

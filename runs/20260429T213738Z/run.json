@@ -1,0 +1,17 @@
+{
+  "topic": "potential acquirers investors forge deals M&A platform",
+  "depth": "standard",
+  "model": "gemini-2.5-flash",
+  "backend": "vertex",
+  "prompt_template_version": "v1",
+  "schema_version": "v1",
+  "max_calls": 5,
+  "max_cost_usd": 0.5,
+  "started_at": "2026-04-29T21:38:38Z",
+  "completed_at": "2026-04-29T21:43:12Z",
+  "calls_used": 1,
+  "tokens_in": 1589,
+  "tokens_out": 72094,
+  "cost_usd": 0.180712,
+  "degraded": false
+}
