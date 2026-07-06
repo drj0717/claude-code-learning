@@ -334,3 +334,27 @@ Running log of all work sessions, maintained by the session-closer.
 - Optional follow-on: bind a key for per-pane background color (e.g. `bind B command-prompt -p "bg color:" "select-pane -P 'bg=%%'"`).
 - Optional follow-on: consider `tmux-resurrect` / `tmux-continuum` if you want sessions to survive reboots.
 - **Curriculum** — still queued at Module 1, Topic 1.
+
+## Session 2026-07-06 10:36
+
+### Accomplished
+- Designed "Claude Code–native agents for Hermes": Hermes gateway keeps channels/cron/memory; agents become persistent Claude Code sessions per profile on the Max subscription. Spec committed to `~/projects/hermes-agent/plans/claude-code-native-agents.md` on branch `design/claude-code-native-agents` (3 commits, pushed to origin).
+- Verified Anthropic policy landscape: April 2026 third-party harness ban is live; the May 2026 "Agent SDK credits" split was paused mid-June — Agent SDK / `claude -p` currently draw from standard subscription limits.
+- Mapped the native seams in hermes-agent: `mcp_serve.py` (9-tool channel bridge built for MCP clients like Claude Code), `copilot_acp_client.py` (external-harness provider template), and flagged `agent/anthropic_adapter.py` as the fingerprinted spoofing path to never build on.
+- Created GitHub epic drj0717/hermes-agent#5 with 10 native sub-issues (#6–#15), agent-tiered (Opus: #6/#8/#11, Codex: #9/#15, Sonnet: #7/#10/#12/#13/#14), each written as a self-contained brief for lower models. Enabled Issues on the fork.
+- Saved project memory `project_hermes_claude_code_native.md` + MEMORY.md index entry.
+
+### Decisions Made
+- Approach: evolve the existing Hermes fork (not a from-scratch port, not a Codex-only gateway) — keeps proven gateway/memory/profiles while agents run in Claude Code where subscription auth is legitimate.
+- Phase 0 = upstream catch-up (5,519 commits behind) with Discord explicitly protected — local Discord behavior presumed more advanced than upstream; conflicts resolve to local.
+- Dashboard kept as-is: model switching survives via `/api/model/set` → runner `cycle`; PTY chat tab out of scope for CC-backed profiles.
+- Model policy: sonnet-5 fleet default, opus-4.8/fable-5 strategic-only with fallback; cost-guard auto-downgrade off by default (David downgrades manually before limits bite).
+- Fable-class models do no development work in this epic — review/re-plan only; detailed issue briefs enable Sonnet/Opus/Codex execution.
+
+### Problems Encountered
+- `docs/superpowers/*` is gitignored upstream — spec relocated to the repo's `plans/` convention.
+- Fork had GitHub Issues disabled (fork default) — enabled via `gh repo edit`.
+
+### Next Steps
+- David reviews epic #5 and the spec; then the pending advice session: should Fable orchestrate execution, or delegate orchestration to Codex GPT-5.5 / Opus 4.8 (Codex's dogmatism suits detailed briefs; #6/#8 have judgment checkpoints).
+- Kick off #6 (Phase 0.1 upstream catch-up with Discord-protected review, Opus 4.8).
